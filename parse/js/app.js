@@ -12,6 +12,7 @@ $(function() {
     // new query that will return all tasks ordered by createdAt
     var tasksQuery = new Parse.Query(Task);
     tasksQuery.ascending('createdAt');
+    tasksQuery.notEqualTo('done', true);
 
     //reference to the taks list element
     var tasksList = $('#tasks-list');
@@ -53,8 +54,13 @@ $(function() {
         tasksList.empty();
         tasks.forEach(function(task) {
             $(document.createElement('li'))
-                .text(task.get('title'))
-                .appendTo(tasksList);
+                .text(task.get('title') + ' : ' + task.get('rating'))
+                .addClass(task.get('done') ? 'completed-task' : '')
+                .appendTo(tasksList)
+                .click(function() {
+                    task.set('done', !task.get('done'));
+                    task.save().then(renderTasks, displayError);
+                });
         });
     }
 
@@ -65,9 +71,15 @@ $(function() {
         var titleInput = $(this).find('[name="title"]');
         var title = titleInput.val();
         var task = new Task();
+
+
         task.set('title', title);
+        task.set('rating', $("#rating").raty('score'));
+
+
         task.save().then(fetchTasks, displayError).then(function() {
             titleInput.val('');
+            $("#rating").raty('set', true);
         });
 
         return false;
@@ -75,6 +87,8 @@ $(function() {
 
     //go and fetch tasks from Parse
     fetchTasks();
+
+    $('#rating').raty();
 
     //This following line sends a request to Parse every 10 seconds to update the task list
     //window.setInterval(fetchTasks, 10000);
