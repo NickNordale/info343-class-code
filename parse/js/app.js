@@ -53,14 +53,19 @@ $(function() {
     function renderTasks() {
         tasksList.empty();
         tasks.forEach(function(task) {
-            $(document.createElement('li'))
-                .text(task.get('title') + ' : ' + task.get('rating'))
+            var li = $(document.createElement('li'))
+                .text(task.get('title'))
                 .addClass(task.get('done') ? 'completed-task' : '')
                 .appendTo(tasksList)
                 .click(function() {
                     task.set('done', !task.get('done'));
                     task.save().then(renderTasks, displayError);
                 });
+
+            $(document.createElement('span'))
+                .raty({readOnly: true, score: (task.get('rating') || 0),
+                                        hints: ['awful', 'bad', 'decent', 'good', 'awesome']})
+                .appendTo(li);
         });
     }
 

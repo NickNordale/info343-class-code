@@ -17,6 +17,7 @@ body {
 
 #tasks-list li {
     cursor: pointer;
+    /*width: 25%;*/
 }
 
 .completed-task {
@@ -27,6 +28,5 @@ body {
 #rating {
     color: #FFD700
 }
-
 
 
