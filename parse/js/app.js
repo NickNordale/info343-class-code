@@ -14,7 +14,7 @@ $(function() {
     tasksQuery.ascending('createdAt');
     tasksQuery.notEqualTo('done', true);
 
-    //reference to the taks list element
+    //reference to the task list element
     var tasksList = $('#tasks-list');
 
     //reference to the error message alert
