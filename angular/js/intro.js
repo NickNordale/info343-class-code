@@ -34,4 +34,4 @@ angular.module('AngularIntro', [])
         //the page to see how the default value of the model is
         //automatically shown in the view on page load
         $scope.name = null;
-    });
+    })
