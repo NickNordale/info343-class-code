@@ -4,14 +4,8 @@
 
 angular.module('ContactsApp', ['ui.router', 'angular-uuid', 'LocalStorageModule'])
     .constant('storageKey', 'contacts-list')
-    .factory('contacts', function(uuid, localStorageService, storageKey) {
-        return[{
-            id: "default-delete-me",
-            fname: "Michael",
-            lname: "Scott",
-            phone: "206-111-2222",
-            dob: "1/2/1960"
-        }];
+    .factory('contacts', function(localStorageService, storageKey) {
+        return localStorageService.get(storageKey) || [];
     })
     .config(function($stateProvider, $urlRouterProvider) {
         $stateProvider
@@ -48,12 +42,12 @@ angular.module('ContactsApp', ['ui.router', 'angular-uuid', 'LocalStorageModule'
     .controller('ContactsController', function($scope, contacts) {
         $scope.contacts = contacts;
     })
-    .controller('ContactDetailController', function($scope, $stateParams, $state, contacts) {
+    .controller('ContactDetailController', function($scope, $stateParams, $state) {
         $scope.contact = contacts.find(function(contact) {
             return contact.id === $stateParams.id;
         });
     })
-    .controller('EditContactController', function($scope, $stateParams, $state, contacts) {
+    .controller('EditContactController', function($scope, $stateParams, $state, uuid, localStorageService, storageKey, contacts) {
 
         var existingContact = contacts.find(function(contact) {
             return contact.id === $stateParams.id;
@@ -62,7 +56,12 @@ angular.module('ContactsApp', ['ui.router', 'angular-uuid', 'LocalStorageModule'
         $scope.contact = angular.copy(existingContact);
 
         $scope.save = function() {
-            angular.copy($scope.contact, existingContact);
+            if ($scope.contact.id) {
+                angular.copy($scope.contact, existingContact);
+            } else {
+                $scope.contact.id = uuid.v4();
+                contacts.push($scope.contact);
+            }
             $state.go('list');
         };
     });
