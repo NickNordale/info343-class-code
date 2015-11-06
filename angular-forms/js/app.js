@@ -33,6 +33,18 @@ angular.module('ContactsApp', ['ui.router', 'angular-uuid', 'LocalStorageModule'
 
         $urlRouterProvider.otherwise('/contacts');
     })
+    // register a directive for custom validation of dates in the past
+    .directive('inThePast', function() {
+        return {
+            require: 'ngModel',
+            link: function(scope, elem, attrs, controller) {
+                controller.$validators.inThePast = function(modelValue) {
+                    var today = new Date();
+                    return (new Date(modelValue) <= today);
+                }
+            }
+        };
+    })
     .controller('ContactsController', function($scope, contacts) {
         $scope.contacts = contacts;
     })
