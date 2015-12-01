@@ -15,7 +15,7 @@ angular.module('ContactsApp', ['ui.router', 'angular-uuid', 'LocalStorageModule'
                 controller: 'ContactsController'
             })
             .state('detail', {
-                url: '/contact/:id',
+                url: '/contacts/:id',
                 templateUrl: 'views/contact-detail.html',
                 controller: 'ContactDetailController'
             })
@@ -42,7 +42,7 @@ angular.module('ContactsApp', ['ui.router', 'angular-uuid', 'LocalStorageModule'
     .controller('ContactsController', function($scope, contacts) {
         $scope.contacts = contacts;
     })
-    .controller('ContactDetailController', function($scope, $stateParams, $state) {
+    .controller('ContactDetailController', function($scope, $stateParams, $state, contacts) {
         $scope.contact = contacts.find(function(contact) {
             return contact.id === $stateParams.id;
         });
@@ -62,6 +62,7 @@ angular.module('ContactsApp', ['ui.router', 'angular-uuid', 'LocalStorageModule'
                 $scope.contact.id = uuid.v4();
                 contacts.push($scope.contact);
             }
+            localStorageService.set(storageKey, contacts);
             $state.go('list');
         };
     });
